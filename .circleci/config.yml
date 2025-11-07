@@ -23,15 +23,33 @@ jobs:
           path: ~/project/
       - node/install:
           node-version: '20.9'
-      - run: node --version 
-      - run: npm i -g @railway/cli
       - run:
-          name: Deploy to Railway App
+          name: Node and NPM version
+          command: |
+            node --version
+            npm --version
+      - run:
+          name: Install Railway CLI
+          command: npm i -g @railway/cli
+
+      # --- NUEVO: LOGIN CON TOKEN ---
+      - run:
+          name: Railway login (token)
+          command: |
+            railway login --token "$RAILWAY_TOKEN" || railway login --apiKey "$RAILWAY_TOKEN"
+
+      # --- NUEVO: LINK AL PROYECTO Y SERVICIO ---
+      - run:
+          name: Link to Railway project and service
+          command: |
+            railway link -p 77f7b558-f962-4e95-8f5a-636a2936a3aa -s 9d0d02d1-734e-460b-9ab9-a26849fb4301
+
+      # --- NUEVO: DEPLOY CORRECTO ---
+      - run:
+          name: Deploy to Railway App (service: brilliant-enthusiasm)
           command: |
             cd bankchurn-api
-            railway up --service=pacific-clarity
-            railway up --detach
-
+            railway up --service "brilliant-enthusiasm" --detach
 
 tags_only: &tags_only
   filters:
